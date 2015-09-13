@@ -3,3 +3,8 @@ main: io.ruben.minecraft.avatars.AvatarsPlugin
 version: 1
 database: false
 depend: [ScalaLang]
+
+commands:
+  avatars:
+    description: Base command for the Avatars plugin
+    usage: /<command> [options]

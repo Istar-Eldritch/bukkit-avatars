@@ -13,7 +13,6 @@ import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.Success
 import scala.util.Failure
-
 /**
 * Created by istar on 13/09/15.
 */
@@ -25,6 +24,7 @@ class AvatarsPlugin extends JavaPlugin {
     getServer.getPluginManager.registerEvents(UserEvents, this)
     ConfigFactory.defaultOverrides()
     //Setup database
+
     db.run(MTable.getTables).onComplete {
       case Success(tables) => {
         if(tables.nonEmpty) {

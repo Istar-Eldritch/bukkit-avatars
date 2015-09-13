@@ -30,12 +30,13 @@ class Locations(tag: Tag)
   extends Table[Location](tag, "LOCATIONS") {
 
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def x = column[Int]("x")
-  def y = column[Int]("y")
-  def z = column[Int]("z")
+  def world = column[String]("world")
+  def x = column[Double]("x")
+  def y = column[Double]("y")
+  def z = column[Double]("z")
   def pitch = column[Float]("pitch")
   def yaw = column[Float]("yaw")
 
-  def * = (x, y, z, pitch, yaw, id.?) <> (Location.tupled, Location.unapply)
+  def * = (world, x, y, z, pitch, yaw, id.?) <> (Location.tupled, Location.unapply)
 }
 
