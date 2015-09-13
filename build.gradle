@@ -1,0 +1,65 @@
+group 'io.ruben.minecraft'
+version '1.0'
+
+apply plugin: 'scala'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        name 'Spigot'
+        url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots'
+    }
+    maven {
+        name 'BungeeCord'
+        url 'https://oss.sonatype.org/content/repositories/snapshots'
+    }
+}
+
+sourceSets {
+    main {
+        scala {
+            srcDirs = ['src/main/scala']
+        }
+        resources {
+            srcDirs = ['src/main/resources']
+        }
+    }
+    test {
+        scala {
+            srcDirs = ['src/test/scala']
+        }
+    }
+}
+
+//compileScala {
+//    scalaCompileOptions.useCompileDaemon = true
+//    // optionally specify host and port of the daemon:
+//    scalaCompileOptions.daemonServer = "localhost:4243"
+//}
+
+task copyPlugin(type: Copy, dependsOn: jar) {
+    from 'build/libs'
+    include '**/*.jar'
+    into pluginsFolder
+}
+
+jar {
+    from { // use of closure defers evaluation until execution time
+        configurations.bundle.collect {
+            zipTree(it)
+        }
+    }
+}
+
+configurations {
+    bundle
+}
+
+dependencies {
+    compile configurations.bundle
+    compile 'org.spigotmc:spigot-api:+'
+    compile "org.scala-lang:scala-library:2.11.7"
+    compile 'com.h2database:h2:1.4.188'
+    compile 'com.typesafe.slick:slick_2.11:3.0.3'
+}
