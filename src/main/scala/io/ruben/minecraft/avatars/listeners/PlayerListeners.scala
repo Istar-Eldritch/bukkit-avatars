@@ -1,7 +1,9 @@
 package io.ruben.minecraft.avatars.listeners
 
 import io.ruben.minecraft.avatars.DataAccess._
-import io.ruben.minecraft.avatars.{AvatarsPlugin, Location, User}
+import io.ruben.minecraft.avatars.events.AvatarQuitEvent
+import io.ruben.minecraft.avatars.{Avatar, AvatarsPlugin, Location, User}
+import org.bukkit.Bukkit
 import org.bukkit.event.player.{PlayerJoinEvent, PlayerQuitEvent}
 import org.bukkit.event.{EventHandler, Listener}
 import org.bukkit.plugin.java.JavaPlugin
@@ -38,12 +40,8 @@ object PlayerListeners extends Listener {
   def onUserLeave(playerQuitEvent: PlayerQuitEvent): Unit = {
     val player = playerQuitEvent.getPlayer
     val playerId = player.getUniqueId.toString
-    val query = for {
-      a <- avatars if a.name === player.getDisplayName
-      l <- locations if l.id === a.locationId
-    } yield (l.world, l.x, l.y, l.z, l.pitch, l.yaw)
-    val l = Location.fromBukkit(player.getLocation)
-    val update = query.update(l.world, l.x, l.y, l.z, l.pitch, l.yaw)
-    db.run(update)
+    db.run(avatars.filter(_.userId === playerId).result.head).onSuccess {
+      case avatar: Avatar => Bukkit.getPluginManager.callEvent(AvatarQuitEvent(player, avatar))
+    }
   }
 }

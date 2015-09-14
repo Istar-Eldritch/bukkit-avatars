@@ -2,7 +2,8 @@ package io.ruben.minecraft.avatars.listeners
 
 import java.util.logging.Level._
 
-import io.ruben.minecraft.avatars.events.{AvatarCreatedEvent, AvatarLoginEvent}
+import io.ruben.minecraft.avatars.Location
+import io.ruben.minecraft.avatars.events.{AvatarQuitEvent, AvatarCreatedEvent, AvatarLoginEvent}
 import org.bukkit.event.{EventHandler, Listener}
 
 import io.ruben.minecraft.avatars.DataAccess._
@@ -36,5 +37,10 @@ object AvatarListeners extends Listener {
   @EventHandler
   def onAvatarCreated(event: AvatarCreatedEvent): Unit =
     event.player.sendMessage(s"The avatar ${event.avatar.name} was created")
+
+  @EventHandler
+  def onAvatarQuit(event: AvatarQuitEvent): Unit = {
+    db.run(locations.filter(_.id === event.avatar.locationId).update(Location.fromBukkit(event.player.getLocation)))
+  }
 
 }

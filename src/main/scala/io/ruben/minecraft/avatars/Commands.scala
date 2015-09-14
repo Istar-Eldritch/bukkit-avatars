@@ -1,6 +1,6 @@
 package io.ruben.minecraft.avatars
 
-import io.ruben.minecraft.avatars.events.{AvatarCreatedEvent, AvatarLoginEvent}
+import io.ruben.minecraft.avatars.events.{AvatarQuitEvent, AvatarCreatedEvent, AvatarLoginEvent}
 import org.bukkit.Bukkit
 import org.bukkit.command.{Command, CommandSender, CommandExecutor}
 import org.bukkit.entity.Player
@@ -42,13 +42,19 @@ object Commands extends CommandExecutor {
                 arguments.tail.headOption match {
                   case Some(name) =>
                     db.run(avatars.filter(_.userId === playerId).filter(_.name === name).result.headOption).map {
-                      case Some(avatar) => Bukkit.getServer.getPluginManager.callEvent(AvatarLoginEvent(player, avatar))
+
+                      case Some(avatar) =>
+                        db.run(avatars.filter(_.userId === playerId).filter(_.name === player.getDisplayName).result.headOption).onSuccess {
+                          case Some(oldAvatar) => Bukkit.getServer.getPluginManager.callEvent(AvatarQuitEvent(player, oldAvatar))
+                        }
+                        Bukkit.getServer.getPluginManager.callEvent(AvatarLoginEvent(player, avatar))
+
                       case None => player.sendMessage(s"You don't have an avatar named $name")
                 }
                   case None => player.sendMessage("You have to specify a name")
                 }
 
-              case _ => player.sendMessage("You have to specify a name")
+              case _ => player.sendMessage("The subcommand is not valid")
             }
 
           case None => player.sendMessage(s"${command.getUsage}\nYou have to specify a subcommand!")
