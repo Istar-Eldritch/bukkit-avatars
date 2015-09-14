@@ -30,7 +30,9 @@ object AvatarListeners extends Listener {
 
     db.run(locations.filter(_.id === avatar.locationId).result.head).onComplete {
       case Success(location) => player.teleport(location.toBukkit)
-      case Failure(err) => plugin.getLogger.log(SEVERE, err.getMessage)
+      case Failure(err) =>
+        err.printStackTrace()
+        plugin.getLogger.log(SEVERE, err.getMessage)
     }
   }
 
@@ -40,7 +42,12 @@ object AvatarListeners extends Listener {
 
   @EventHandler
   def onAvatarQuit(event: AvatarQuitEvent): Unit = {
-    db.run(locations.filter(_.id === event.avatar.locationId).update(Location.fromBukkit(event.player.getLocation)))
+    val currentLoc = Location.fromBukkit(event.player.getLocation).copy(id=Some(event.avatar.locationId))
+    val query = for {
+      l <- locations if l.id === event.avatar.locationId
+    } yield l
+    db.run(query.update(currentLoc)).map(
+      _ => None)
   }
 
 }
