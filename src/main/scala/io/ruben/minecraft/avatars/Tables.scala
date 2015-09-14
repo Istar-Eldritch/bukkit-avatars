@@ -37,6 +37,6 @@ class Locations(tag: Tag)
   def pitch = column[Float]("pitch")
   def yaw = column[Float]("yaw")
 
-  def * = (world, x, y, z, pitch, yaw, id.?) <> (Location.tupled, Location.unapply)
+  def * = (world, x, y, z, pitch, yaw, id.?) <> ((Location.apply _).tupled, Location.unapply)
 }
 

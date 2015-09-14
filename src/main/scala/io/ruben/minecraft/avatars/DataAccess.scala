@@ -12,6 +12,7 @@ object DataAccess {
   val db = Database.forURL(s"jdbc:h2:${plugin.getDataFolder.getAbsolutePath}/avatars", driver = "org.h2.Driver")
   val users = TableQuery[Users]
   val avatars = TableQuery[Avatars]
+  val locations = TableQuery[Locations]
 
   def userAvatars(userId: String) = avatars.filter(_.userId === userId)
   def userAvatars(user: User) = avatars.filter(_.userId === user.id)

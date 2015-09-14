@@ -2,7 +2,6 @@ package io.ruben.minecraft.avatars
 
 import java.util.logging.Level._
 
-import com.typesafe.config.ConfigFactory
 import org.bukkit.plugin.java.JavaPlugin
 import slick.driver.H2Driver.api._
 import DataAccess._
@@ -21,8 +20,13 @@ class AvatarsPlugin extends JavaPlugin {
   def configPath = s"${getDataFolder.getAbsolutePath}/config"
 
   override def onEnable(): Unit = {
+
+    //Setup user login listener
     getServer.getPluginManager.registerEvents(UserEvents, this)
-    ConfigFactory.defaultOverrides()
+
+    //Setup command listener
+    getCommand("avatars").setExecutor(Commands)
+
     //Setup database
 
     db.run(MTable.getTables).onComplete {
@@ -34,7 +38,7 @@ class AvatarsPlugin extends JavaPlugin {
           getLogger.info("Creating database for first time")
 
           val setup: DBIO[Unit] = DBIO.seq(
-            (users.schema ++ avatars.schema).create
+            (users.schema ++ avatars.schema ++ locations.schema).create
           )
           val setupDb: Future[Unit] = db.run(setup)
 

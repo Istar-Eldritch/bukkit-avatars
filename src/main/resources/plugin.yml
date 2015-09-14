@@ -7,4 +7,4 @@ depend: [ScalaLang]
 commands:
   avatars:
     description: Base command for the Avatars plugin
-    usage: /<command> [options]
+    usage: /avatars [command]

@@ -59,7 +59,7 @@ configurations {
 dependencies {
     compile configurations.bundle
     compile 'org.spigotmc:spigot-api:+'
-    compile "org.scala-lang:scala-library:2.11.7"
+    compile 'org.scala-lang:scala-library:2.11.7'
     compile 'com.h2database:h2:1.4.188'
     compile 'com.typesafe.slick:slick_2.11:3.0.3'
 }

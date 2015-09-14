@@ -1,7 +1,6 @@
 package io.ruben.minecraft.avatars
 
 import org.bukkit.{Bukkit, World}
-import org.bukkit.plugin.java.JavaPlugin
 
 /**
  * Created by istar on 13/09/15.
@@ -19,8 +18,22 @@ case class Location(world: String, x: Double, y: Double, z: Double, pitch: Float
     location.setPitch(pitch)
     location.setYaw(yaw)
 
-    return location
+    location
   }
+}
+
+object Location {
+  def fromBukkit(bukkitLocation: org.bukkit.Location): Location = {
+    val world = bukkitLocation.getWorld.getName
+    val x = bukkitLocation.getX
+    val y = bukkitLocation.getY
+    val z = bukkitLocation.getZ
+    val pitch = bukkitLocation.getPitch
+    val yaw = bukkitLocation.getYaw
+
+    Location(world, x, y, z, pitch, yaw)
+  }
+
 }
 
 //object Location {
