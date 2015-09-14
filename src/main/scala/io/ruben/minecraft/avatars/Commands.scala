@@ -59,8 +59,12 @@ object Commands extends CommandExecutor {
 
                         db.run(avatars.filter(_.userId === playerId).filter(_.name === oldName).result.headOption).map {
                           case Some(oldAvatar) =>
-                            Bukkit.getServer.getPluginManager.callEvent(AvatarQuitEvent(player, oldAvatar))
-                            Bukkit.getServer.getPluginManager.callEvent(AvatarLoginEvent(player, avatar))
+                            if(oldAvatar.id == avatar.id) {
+                              player.sendMessage(s"You are already playing as ${avatar.name}")
+                            } else {
+                              Bukkit.getServer.getPluginManager.callEvent(AvatarQuitEvent(player, oldAvatar))
+                              Bukkit.getServer.getPluginManager.callEvent(AvatarLoginEvent(player, avatar))
+                            }
                           case None =>
                             Bukkit.getServer.getPluginManager.callEvent(AvatarLoginEvent(player, avatar))
                         }
