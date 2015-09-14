@@ -2,6 +2,7 @@ package io.ruben.minecraft.avatars
 
 import java.util.logging.Level._
 
+import io.ruben.minecraft.avatars.listeners.{AvatarListeners, PlayerListeners}
 import org.bukkit.plugin.java.JavaPlugin
 import slick.driver.H2Driver.api._
 import DataAccess._
@@ -22,7 +23,8 @@ class AvatarsPlugin extends JavaPlugin {
   override def onEnable(): Unit = {
 
     //Setup user login listener
-    getServer.getPluginManager.registerEvents(UserEvents, this)
+    getServer.getPluginManager.registerEvents(PlayerListeners, this)
+    getServer.getPluginManager.registerEvents(AvatarListeners, this)
 
     //Setup command listener
     getCommand("avatars").setExecutor(Commands)

@@ -35,16 +35,3 @@ object Location {
   }
 
 }
-
-//object Location {
-//
-//  def fromBukkit(location: org.bukkit.Location): Location = {
-//    val x = location.getX
-//    val y = location.getY
-//    val z = location.getZ
-//    val pitch = location.getPitch
-//    val yaw = location.getYaw
-//    Location(x, y, z, pitch, yaw)
-//  }
-//
-//}
