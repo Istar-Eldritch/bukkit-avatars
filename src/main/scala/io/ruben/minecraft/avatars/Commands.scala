@@ -18,7 +18,7 @@ import scala.util.{Failure, Success}
 object Commands extends CommandExecutor {
   override def onCommand(commandSender: CommandSender, command: Command, s: String, arguments: Array[String]): Boolean = {
 
-    val fMsg:Unit = commandSender match {
+    commandSender match {
       case player: Player =>
         val playerId = player.getUniqueId.toString
 

@@ -25,12 +25,12 @@ object PlayerListeners extends Listener {
     val query = users.filter(_.id === player.getUniqueId.toString)
     db.run(query.result.head).onComplete {
       case Success(user) =>
-        player.sendMessage("I already know you")
+        player.sendMessage("Switch to your avatar with /avatars sw")
         //TODO Force the user to use an avatar
 
       case Failure(f) =>
-        player.sendMessage("You are new in this lands")
-        db.run(DBIO.seq(users += User(player.getUniqueId.toString, player.getName)))
+        player.sendMessage("You don't have any avatars, create one with /avatars cr")
+        db.run(DBIO.seq(users += User(player.getUniqueId.toString, player.getName, None)))
         //TODO Force the user to register a new avatar
 
     }

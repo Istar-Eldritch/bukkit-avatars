@@ -16,4 +16,6 @@ object DataAccess {
 
   def userAvatars(userId: String) = avatars.filter(_.userId === userId)
   def userAvatars(user: User) = avatars.filter(_.userId === user.id)
+  def updateUser(userId: String, avatarId: Int) =
+    users.filter(_.id === userId).map(_.currentAvatar).update(avatarId)
 }

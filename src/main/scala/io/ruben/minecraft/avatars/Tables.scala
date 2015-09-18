@@ -10,7 +10,8 @@ class Users(tag: Tag)
 
   def id =  column[String]("id", O.PrimaryKey)
   def name = column[String]("name")
-  def * = (id, name) <> (User.tupled, User.unapply)
+  def currentAvatar = column[Int]("currentAvatar")
+  def * = (id, name, currentAvatar.?) <> (User.tupled, User.unapply)
 }
 
 class Avatars(tag: Tag)

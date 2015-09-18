@@ -21,6 +21,7 @@ object AvatarListeners extends Listener {
   @EventHandler
   def onAvatarLogin(avatarLoginEvent: AvatarLoginEvent): Unit = {
     val player = avatarLoginEvent.player
+    val playerId = player.getUniqueId.toString
     val avatar = avatarLoginEvent.avatar
 
     player.setDisplayName(avatar.name)
@@ -29,7 +30,9 @@ object AvatarListeners extends Listener {
     //TODO Broadcast avatar connection
 
     db.run(locations.filter(_.id === avatar.locationId).result.head).onComplete {
-      case Success(location) => player.teleport(location.toBukkit)
+      case Success(location) =>
+        updateUser(playerId, avatar.id.get).map(_ => player.teleport(location.toBukkit))
+
       case Failure(err) =>
         err.printStackTrace()
         plugin.getLogger.log(SEVERE, err.getMessage)

@@ -5,7 +5,7 @@ import org.bukkit.{Bukkit, World}
 /**
  * Created by istar on 13/09/15.
  */
-case class User(id: String, name: String)
+case class User(id: String, name: String, currentAvatar: Option[Int])
 case class Avatar(name: String, userId: String, locationId: Int, id: Option[Int] = None)
 case class Location(world: String, x: Double, y: Double, z: Double, pitch: Float, yaw: Float, id: Option[Int] = None) {
 
