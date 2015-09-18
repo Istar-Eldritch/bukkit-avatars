@@ -1,8 +1,7 @@
 package io.ruben.minecraft.avatars
 
-import java.util.logging.Level
-
 import io.ruben.minecraft.avatars.events.{AvatarQuitEvent, AvatarCreatedEvent, AvatarLoginEvent}
+import io.ruben.minecraft.avatars.models._
 import org.bukkit.Bukkit
 import org.bukkit.command.{Command, CommandSender, CommandExecutor}
 import org.bukkit.entity.Player
@@ -10,7 +9,7 @@ import org.bukkit.entity.Player
 import DataAccess._
 import slick.driver.H2Driver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Failure, Success}
+import scala.util.{Success, Failure}
 
 /**
  * Created by istar on 13/09/15.
@@ -20,7 +19,7 @@ object Commands extends CommandExecutor {
 
     commandSender match {
       case player: Player =>
-        val playerId = player.getUniqueId.toString
+        val playerId = player.getUniqueId
 
         arguments.headOption match {
           case Some(cmd) =>
@@ -30,22 +29,20 @@ object Commands extends CommandExecutor {
 
                 arguments.tail.headOption match {
                   case Some(name) =>
-                    val location: Location = Location.fromBukkit(player.getLocation)
-                    db.run((locations returning locations.map(_.id)) += location).onSuccess {
-                      case locationId: Int =>
-                        val newAvatar = Avatar(name, playerId, locationId)
-                        db.run((avatars returning avatars.map(_.id)) += newAvatar).onSuccess {
-                          case idAvatar: Int =>
-                            val avatar = Avatar(name, playerId, locationId, Option(idAvatar))
+                    Location.fromBukkit(player.getLocation).save.onComplete {
+                      case Success(location) =>
+                        Avatar(name, playerId, location.id).save.onSuccess {
+                          case avatar =>
                             Bukkit.getPluginManager.callEvent(AvatarCreatedEvent(player, avatar))
                         }
+                      case Failure(err) => err.printStackTrace
                     }
                   case None => player.sendMessage("You have to specify a name")
                 }
 
 
               case "list" | "ls" =>
-                db.run(userAvatars(playerId).map(_.name).result).onSuccess {
+                db.run(avatars.filter(_.userId === playerId).map(_.name).result).onSuccess {
                   case nameSeq: Seq[String] => player.sendMessage(nameSeq.mkString("\n"))
                 }
               case "switch" | "sw" =>

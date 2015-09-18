@@ -1,9 +1,8 @@
 package io.ruben.minecraft.avatars.listeners
 
 import java.util.logging.Level._
-
-import io.ruben.minecraft.avatars.Location
 import io.ruben.minecraft.avatars.events.{AvatarQuitEvent, AvatarCreatedEvent, AvatarLoginEvent}
+import io.ruben.minecraft.avatars.models.{UserInfo, Location}
 import org.bukkit.event.{EventHandler, Listener}
 
 import io.ruben.minecraft.avatars.DataAccess._
@@ -21,7 +20,7 @@ object AvatarListeners extends Listener {
   @EventHandler
   def onAvatarLogin(avatarLoginEvent: AvatarLoginEvent): Unit = {
     val player = avatarLoginEvent.player
-    val playerId = player.getUniqueId.toString
+    val playerId = player.getUniqueId
     val avatar = avatarLoginEvent.avatar
 
     player.setDisplayName(avatar.name)
@@ -31,7 +30,10 @@ object AvatarListeners extends Listener {
 
     db.run(locations.filter(_.id === avatar.locationId).result.head).onComplete {
       case Success(location) =>
-        updateUser(playerId, avatar.id.get).map(_ => player.teleport(location.toBukkit))
+        player.teleport(location.toBukkit)
+        db.run(users.filter(_.id === playerId).result.head).onSuccess {
+          case user => user.copy(currentAvatar = Some(avatar.id)).save
+        }
 
       case Failure(err) =>
         err.printStackTrace()
@@ -45,12 +47,7 @@ object AvatarListeners extends Listener {
 
   @EventHandler
   def onAvatarQuit(event: AvatarQuitEvent): Unit = {
-    val currentLoc = Location.fromBukkit(event.player.getLocation).copy(id=Some(event.avatar.locationId))
-    val query = for {
-      l <- locations if l.id === event.avatar.locationId
-    } yield l
-    db.run(query.update(currentLoc)).map(
-      _ => None)
+    Location.fromBukkit(event.player.getLocation).copy(id=event.avatar.locationId).save
   }
 
 }

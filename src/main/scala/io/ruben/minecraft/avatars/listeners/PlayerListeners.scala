@@ -2,11 +2,10 @@ package io.ruben.minecraft.avatars.listeners
 
 import io.ruben.minecraft.avatars.DataAccess._
 import io.ruben.minecraft.avatars.events.AvatarQuitEvent
-import io.ruben.minecraft.avatars.{Avatar, AvatarsPlugin, Location, User}
+import io.ruben.minecraft.avatars.models._
 import org.bukkit.Bukkit
 import org.bukkit.event.player.{PlayerJoinEvent, PlayerQuitEvent}
 import org.bukkit.event.{EventHandler, Listener}
-import org.bukkit.plugin.java.JavaPlugin
 import slick.driver.H2Driver.api._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -16,13 +15,12 @@ import scala.util.{Failure, Success}
  * Created by istar on 13/09/15.
  */
 object PlayerListeners extends Listener {
-  val plugin: AvatarsPlugin = JavaPlugin.getPlugin(classOf[AvatarsPlugin])
 
   @EventHandler
   def onUserJoin(playerJoinEvent: PlayerJoinEvent): Unit = {
     val player = playerJoinEvent.getPlayer
 
-    val query = users.filter(_.id === player.getUniqueId.toString)
+    val query = users.filter(_.id === player.getUniqueId)
     db.run(query.result.head).onComplete {
       case Success(user) =>
         player.sendMessage("Switch to your avatar with /avatars sw")
@@ -30,7 +28,9 @@ object PlayerListeners extends Listener {
 
       case Failure(f) =>
         player.sendMessage("You don't have any avatars, create one with /avatars cr")
-        db.run(DBIO.seq(users += User(player.getUniqueId.toString, player.getName, None)))
+        UserInfo(player.getUniqueId, player.getName).save.onFailure {
+          case err => err.printStackTrace();
+        }
         //TODO Force the user to register a new avatar
 
     }
@@ -39,7 +39,7 @@ object PlayerListeners extends Listener {
   @EventHandler
   def onUserLeave(playerQuitEvent: PlayerQuitEvent): Unit = {
     val player = playerQuitEvent.getPlayer
-    val playerId = player.getUniqueId.toString
+    val playerId = player.getUniqueId
     db.run(avatars.filter(_.userId === playerId).result.head).onSuccess {
       case avatar: Avatar => Bukkit.getPluginManager.callEvent(AvatarQuitEvent(player, avatar))
     }

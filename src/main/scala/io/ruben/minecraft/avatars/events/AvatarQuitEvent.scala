@@ -1,6 +1,6 @@
 package io.ruben.minecraft.avatars.events
 
-import io.ruben.minecraft.avatars.Avatar
+import io.ruben.minecraft.avatars.models.Avatar
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 
