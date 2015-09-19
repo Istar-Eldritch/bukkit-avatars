@@ -18,8 +18,6 @@ import scala.util.Failure
 */
 class AvatarsPlugin extends JavaPlugin {
 
-  def configPath = s"${getDataFolder.getAbsolutePath}/config"
-
   override def onEnable(): Unit = {
 
     //Setup user login listener
@@ -32,7 +30,7 @@ class AvatarsPlugin extends JavaPlugin {
     //Setup database
 
     db.run(MTable.getTables).onComplete {
-      case Success(tables) => {
+      case Success(tables) =>
         if(tables.nonEmpty) {
           getLogger.info("Database already exist")
         }
@@ -47,10 +45,8 @@ class AvatarsPlugin extends JavaPlugin {
           Await.result(setupDb, Duration.Inf)
           getLogger.info("Database created")
         }
-      }
-      case Failure(f) => {
+      case Failure(f) =>
         getLogger.log(SEVERE, "Couldn't read/write the database")
-      }
     }
   }
 
