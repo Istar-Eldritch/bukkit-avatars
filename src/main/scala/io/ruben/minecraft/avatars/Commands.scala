@@ -2,7 +2,7 @@ package io.ruben.minecraft.avatars
 
 import io.ruben.minecraft.avatars.events.{AvatarQuitEvent, AvatarCreatedEvent, AvatarLoginEvent}
 import io.ruben.minecraft.avatars.models._
-import org.bukkit.Bukkit
+import org.bukkit.{World, Bukkit}
 import org.bukkit.command.{Command, CommandSender, CommandExecutor}
 import org.bukkit.entity.Player
 
@@ -29,13 +29,16 @@ object Commands extends CommandExecutor {
 
                 arguments.tail.headOption match {
                   case Some(name) =>
-                    Location.fromBukkit(player.getLocation).save.onComplete {
+                    //TODO Load spawn location from configuration
+                    Location.fromBukkit(Bukkit.getWorld("world").getSpawnLocation).save.onComplete {
                       case Success(location) =>
-                        Avatar(name, playerId, location.id).save.onSuccess {
-                          case avatar =>
+                        Avatar(name, playerId, location.id).save.onComplete {
+                          case Success(avatar) =>
                             Bukkit.getPluginManager.callEvent(AvatarCreatedEvent(player, avatar))
+                          case Failure(err) =>
+                            player.sendMessage(s"There's already an avatar called $name!")
                         }
-                      case Failure(err) => err.printStackTrace
+                      case Failure(err) => err.printStackTrace()
                     }
                   case None => player.sendMessage("You have to specify a name")
                 }

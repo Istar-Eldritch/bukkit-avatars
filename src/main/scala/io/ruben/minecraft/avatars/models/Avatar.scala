@@ -25,4 +25,6 @@ class Avatars(tag: Tag)
   def inventoryId = column[Option[UUID]]("inventory")
 
   def * = (name, userId, locationId, id, inventoryId) <> (Avatar.tupled, Avatar.unapply)
+
+  def idx = index("index_name", name, unique = true)
 }
