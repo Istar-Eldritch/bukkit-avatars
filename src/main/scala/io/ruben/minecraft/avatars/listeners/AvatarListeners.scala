@@ -3,7 +3,7 @@ package io.ruben.minecraft.avatars.listeners
 import java.util.logging.Level._
 import io.ruben.minecraft.avatars.events.{AvatarQuitEvent, AvatarCreatedEvent, AvatarLoginEvent}
 import io.ruben.minecraft.avatars.models.{UserInfo, Location}
-import io.ruben.minecraft.inventories.api.ExtraStorageAdapter
+import io.ruben.minecraft.avatars.ExtraStorageAdapter
 import org.bukkit.event.{EventHandler, Listener}
 
 import io.ruben.minecraft.avatars.DataAccess._
