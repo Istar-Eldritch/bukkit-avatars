@@ -29,7 +29,7 @@ object Commands extends CommandExecutor {
 
                 arguments.tail.headOption match {
                   case Some(name) =>
-                    //TODO Load spawn location from configuration
+                    //TODO Load world spawn from configuration
                     Location.fromBukkit(Bukkit.getWorld("world").getSpawnLocation).save.onComplete {
                       case Success(location) =>
                         Avatar(name, playerId, location.id).save.onComplete {

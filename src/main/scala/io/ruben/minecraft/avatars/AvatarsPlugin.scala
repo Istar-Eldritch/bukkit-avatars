@@ -29,23 +29,24 @@ class AvatarsPlugin extends JavaPlugin {
 
     //Setup database
 
-    db.run(MTable.getTables).onComplete {
+    db.run(MTable.getTables(users.baseTableRow.tableName)).onComplete {
       case Success(tables) =>
-        if(tables.nonEmpty) {
-          getLogger.info("Database already exist")
-        }
-        else {
-          getLogger.info("Creating database for first time")
+        if(tables.isEmpty) {
+          getLogger.info("Creating tables for first time")
 
           val setup: DBIO[Unit] = DBIO.seq(
             (users.schema ++ avatars.schema ++ locations.schema).create
           )
-          val setupDb: Future[Unit] = db.run(setup)
+          db.run(setup).andThen {
+            case _ =>  getLogger.info("Tables created")
+          }
 
-          Await.result(setupDb, Duration.Inf)
-          getLogger.info("Database created")
+        }
+        else {
+          getLogger.info("Initialized storage found")
         }
       case Failure(f) =>
+        f.printStackTrace()
         getLogger.log(SEVERE, "Couldn't read/write the database")
     }
   }

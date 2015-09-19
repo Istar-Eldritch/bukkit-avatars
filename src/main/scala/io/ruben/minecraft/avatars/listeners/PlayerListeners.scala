@@ -20,6 +20,8 @@ object PlayerListeners extends Listener {
   def onUserJoin(playerJoinEvent: PlayerJoinEvent): Unit = {
     val player = playerJoinEvent.getPlayer
 
+    //TODO Hide the user join message
+
     val query = users.filter(_.id === player.getUniqueId)
     db.run(query.result.head).onComplete {
       case Success(user) =>

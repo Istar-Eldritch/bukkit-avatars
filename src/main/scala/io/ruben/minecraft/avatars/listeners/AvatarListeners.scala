@@ -38,7 +38,7 @@ object AvatarListeners extends Listener {
                 val playerInv = player.getInventory
                 playerInv.setContents(inv.contents)
                 inv.armor.collect { case arm => playerInv.setArmorContents(arm) }
-              case Failure(err) => err.printStackTrace
+              case Failure(err) => err.printStackTrace()
             }
         }
     }
