@@ -4,7 +4,6 @@ import io.ruben.minecraft.ScalaLang
 import io.ruben.minecraft.avatars.models._
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
-import slick.driver.H2Driver.api._
 
 
 /**
@@ -12,7 +11,10 @@ import slick.driver.H2Driver.api._
  */
 object DataAccess {
   val plugin:AvatarsPlugin = JavaPlugin.getPlugin(classOf[AvatarsPlugin])
-  val db = Bukkit.getPluginManager.getPlugin("ScalaLang").asInstanceOf[ScalaLang].getDb
+  val scalaLang = Bukkit.getPluginManager.getPlugin("ScalaLang").asInstanceOf[ScalaLang]
+  val db = scalaLang.getDb
+  val driver = scalaLang.getDriver
+  import driver.api._
   val users = TableQuery[Users]
   val avatars = TableQuery[Avatars]
   val locations = TableQuery[Locations]

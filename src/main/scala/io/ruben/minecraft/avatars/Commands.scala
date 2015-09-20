@@ -7,7 +7,7 @@ import org.bukkit.command.{Command, CommandSender, CommandExecutor}
 import org.bukkit.entity.Player
 
 import DataAccess._
-import slick.driver.H2Driver.api._
+import driver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Success, Failure}
 

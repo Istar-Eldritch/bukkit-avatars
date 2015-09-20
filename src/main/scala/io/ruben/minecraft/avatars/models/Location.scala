@@ -4,7 +4,7 @@ import java.util.UUID
 
 import io.ruben.minecraft.avatars.DataAccess._
 import org.bukkit.{World, Bukkit}
-import slick.driver.H2Driver.api._
+import driver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

@@ -1,8 +1,8 @@
 package io.ruben.minecraft.avatars.models
 
 import java.util.UUID
-import slick.driver.H2Driver.api._
 import io.ruben.minecraft.avatars.DataAccess._
+import driver.api._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 

@@ -7,7 +7,7 @@ import io.ruben.minecraft.avatars.ExtraStorageAdapter
 import org.bukkit.event.{EventHandler, Listener}
 
 import io.ruben.minecraft.avatars.DataAccess._
-import slick.driver.H2Driver.api._
+import driver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.util.{Failure, Success}

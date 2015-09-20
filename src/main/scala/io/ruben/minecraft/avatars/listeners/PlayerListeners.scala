@@ -6,8 +6,7 @@ import io.ruben.minecraft.avatars.models._
 import org.bukkit.Bukkit
 import org.bukkit.event.player.{PlayerJoinEvent, PlayerQuitEvent}
 import org.bukkit.event.{EventHandler, Listener}
-import slick.driver.H2Driver.api._
-
+import driver.api._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 
